@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+env/
+
+# Models (downloaded / built on each Jetson)
+*.pt
+*.pth
+*.engine
+*.onnx
+
+# Workshop data created while running
+cnn_activity/data/
+cnn_activity/*.csv
+cnn_activity/*.png
+object_detection/alerts/
+object_detection/detections/
+object_detection/*.csv
+workflow_studio/data/videos/*
+workflow_studio/data/snapshots/*
+workflow_studio/data/clips/*
+workflow_studio/data/logs/*
+workflow_studio/projects/*
+!workflow_studio/data/*/.keep
+!workflow_studio/projects/.keep
+.env_baseline.txt

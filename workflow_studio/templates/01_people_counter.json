@@ -1,0 +1,73 @@
+{
+  "name": "People Counter",
+  "task": "count",
+  "description": "Counts people walking across a line (IN / OUT) and logs every crossing to a CSV file.",
+  "nodes": [
+    {
+      "id": "a",
+      "type": "camera",
+      "params": {},
+      "x": 40,
+      "y": 60
+    },
+    {
+      "id": "b",
+      "type": "detect",
+      "params": {
+        "classes": [
+          "person"
+        ],
+        "track": true
+      },
+      "x": 290,
+      "y": 60
+    },
+    {
+      "id": "c",
+      "type": "line",
+      "params": {
+        "direction": "vertical",
+        "position": 0.5
+      },
+      "x": 540,
+      "y": 60
+    },
+    {
+      "id": "d",
+      "type": "view",
+      "params": {
+        "title": "People counter"
+      },
+      "x": 790,
+      "y": 60
+    },
+    {
+      "id": "e",
+      "type": "log",
+      "params": {
+        "mode": "on trigger",
+        "file": "people_counter.csv"
+      },
+      "x": 790,
+      "y": 210
+    }
+  ],
+  "edges": [
+    [
+      "a",
+      "b"
+    ],
+    [
+      "b",
+      "c"
+    ],
+    [
+      "c",
+      "d"
+    ],
+    [
+      "c",
+      "e"
+    ]
+  ]
+}

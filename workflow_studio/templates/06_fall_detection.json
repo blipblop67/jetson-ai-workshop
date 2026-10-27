@@ -1,0 +1,95 @@
+{
+  "name": "Fall Detection",
+  "task": "safety",
+  "description": "Pose AI spots a person lying down for 2 s \u2192 alarm, photo and video clip (elderly care, workshops, hostels). Add a Telegram block to alert a phone.",
+  "nodes": [
+    {
+      "id": "a",
+      "type": "camera",
+      "params": {},
+      "x": 40,
+      "y": 60
+    },
+    {
+      "id": "b",
+      "type": "pose",
+      "params": {},
+      "x": 290,
+      "y": 60
+    },
+    {
+      "id": "c",
+      "type": "pose_if",
+      "params": {
+        "pose": "lying down (fall)",
+        "value": 1,
+        "hold": 2
+      },
+      "x": 540,
+      "y": 60
+    },
+    {
+      "id": "d",
+      "type": "alert",
+      "params": {
+        "message": "Possible fall detected!"
+      },
+      "x": 790,
+      "y": 60
+    },
+    {
+      "id": "e",
+      "type": "view",
+      "params": {
+        "title": "Fall detection"
+      },
+      "x": 1040,
+      "y": 60
+    },
+    {
+      "id": "f",
+      "type": "snapshot",
+      "params": {
+        "every": 10
+      },
+      "x": 1040,
+      "y": 210
+    },
+    {
+      "id": "g",
+      "type": "record",
+      "params": {
+        "seconds": 8,
+        "before": 4
+      },
+      "x": 790,
+      "y": 210
+    }
+  ],
+  "edges": [
+    [
+      "a",
+      "b"
+    ],
+    [
+      "b",
+      "c"
+    ],
+    [
+      "c",
+      "d"
+    ],
+    [
+      "d",
+      "e"
+    ],
+    [
+      "d",
+      "f"
+    ],
+    [
+      "c",
+      "g"
+    ]
+  ]
+}

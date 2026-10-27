@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Workflow Studio</title>
+<link rel="stylesheet" href="/static/vendor/drawflow.min.css">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="brand"><span class="logo">◆</span> AI Workflow Studio <span class="sub">Jetson Orin Nano</span></div>
+  <input id="projName" value="My AI Project" title="Project name">
+  <div class="tools">
+    <button id="btnNew" title="Start an empty project">New</button>
+    <button id="btnTemplates" title="Open a ready-made example">Templates</button>
+    <button id="btnOpen" title="Open a saved project">Open</button>
+    <button id="btnSave" title="Save this project">Save</button>
+    <button id="btnCheck" title="Check the workflow for problems">Check</button>
+    <button id="btnRun" class="run" title="Test your workflow here in the editor">▶ Run</button>
+    <button id="btnDeploy" class="deploy" title="Keep it running on the Jetson and watch from a laptop or phone">🚀 Deploy</button>
+  </div>
+  <div id="statusPill" class="pill idle">Stopped</div>
+</header>
+
+<main>
+  <aside id="palette">
+    <input id="search" placeholder="Search blocks…">
+    <div id="paletteList"></div>
+    <div class="hint">Drag blocks onto the canvas, then connect the <b>right dot</b> of one block to the <b>left dot</b> of the next.</div>
+  </aside>
+
+  <section id="canvasWrap">
+    <div id="drawflow"></div>
+    <div id="emptyHint">
+      <div class="big">Build your AI project</div>
+      <div>Drag a <b>📷 Camera</b> block here to start, or open a <a href="#" id="emptyTemplates">template</a>.</div>
+      <div class="flow">📷 Camera → 🎯 Detector → 🔢 Condition → 🚨 Alert · 🖥️ Live View</div>
+    </div>
+    <div class="zoom">
+      <button onclick="editor.zoom_out()" title="Zoom out">−</button><button onclick="fitView()" title="Fit all blocks on screen">Fit</button><button onclick="editor.zoom_in()" title="Zoom in">+</button>
+    </div>
+    <div id="problems"></div>
+    <div id="deployBar"></div>
+  </section>
+
+  <aside id="side">
+    <nav>
+      <button data-tab="settings" class="active">Settings</button>
+      <button data-tab="live">Live <span id="liveDot"></span></button>
+      <button data-tab="events">Events</button>
+      <button data-tab="snaps">Media</button>
+    </nav>
+    <div class="tab active" id="tab-settings"><div id="settings" class="empty">Click a block to change its settings.</div></div>
+    <div class="tab" id="tab-live">
+      <select id="viewSelect"></select>
+      <div class="video"><img id="liveImg" alt=""><div id="liveIdle">Press <b>▶ Run</b> to start your workflow.</div></div>
+      <div id="metrics"></div>
+      <div id="blockStats"></div>
+    </div>
+    <div class="tab" id="tab-events"><div id="logLinks"></div><div id="events"></div></div>
+    <div class="tab" id="tab-snaps"><div id="clips"></div><div id="snaps"></div></div>
+  </aside>
+</main>
+
+<div id="modal" class="modal hidden"><div class="box"><div class="mhead"><span id="mTitle"></span><button id="mClose">✕</button></div><div id="mBody"></div></div></div>
+<div id="toasts"></div>
+
+<script src="/static/vendor/drawflow.min.js"></script>
+<script src="/static/vendor/qrcode.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

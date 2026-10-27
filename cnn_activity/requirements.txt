@@ -1,0 +1,8 @@
+# Install these GPU builds from the Jetson AI Lab index (NOT plain PyPI):
+#   pip install torch==2.8.0 torchvision==0.23.0 --index-url https://pypi.jetson-ai-lab.io/jp6/cu126/+simple/
+# Keep 2.8.0: newer Jetson builds (2.10+) also need NVIDIA's cuDSS library (ImportError: libcudss.so.0).
+torch==2.8.0
+torchvision==0.23.0
+matplotlib
+numpy<2          # the Jetson PyTorch build needs NumPy 1.x
+# opencv-python   # only if the system OpenCV is not visible in your venv

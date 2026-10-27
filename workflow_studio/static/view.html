@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jetson Live</title>
+<style>
+  :root { --bg: #15171a; --panel: #1e2125; --panel2: #262a2f; --line: #343941; --text: #e8eaed; --muted: #9aa0a6;
+          --green: #76b900; --red: #eb5757; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  header .logo { color: var(--green); font-weight: 700; }
+  header h1 { font-size: 17px; margin: 0; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pill { padding: 3px 10px; border-radius: 99px; font-size: 12px; background: var(--panel2); white-space: nowrap; }
+  .pill.on { background: rgba(118, 185, 0, .18); color: var(--green); }
+  .pill.err { background: rgba(235, 87, 87, .18); color: var(--red); }
+  main { max-width: 1100px; margin: 0 auto; padding: 14px 16px 30px; display: grid; gap: 14px; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+  .video { position: relative; background: #000; border-radius: 10px; overflow: hidden; aspect-ratio: 16 / 9; }
+  .video img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  #idle { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--muted); padding: 20px; }
+  #banner { display: none; margin-top: 10px; padding: 12px 14px; border-radius: 8px; background: #5a1d1d; border: 1px solid var(--red);
+            font-weight: 700; animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { background: #3a1d1d; } }
+  select, button { font: inherit; color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; }
+  .row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  #metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .m { background: var(--panel); border-radius: 10px; padding: 10px 12px; }
+  .m .n { font-size: 26px; font-weight: 700; color: var(--green); }
+  .m .l { font-size: 12px; color: var(--muted); }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 16px 0 6px; }
+  .ev { display: grid; grid-template-columns: 64px 1fr; gap: 6px; font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--line); }
+  .ev b { color: var(--green); } .ev.ALERT b, .ev.ERROR b { color: var(--red); }
+  .muted { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<header><span class="logo">◆</span><h1 id="name">Jetson Live</h1><span id="pill" class="pill">Connecting…</span></header>
+<main>
+  <section>
+    <div class="video"><img id="img" alt="Live video"><div id="idle">Waiting for the Jetson…</div></div>
+    <div id="banner"></div>
+    <div class="row">
+      <select id="views" style="display:none"></select>
+      <button id="snd">🔔 Turn on alert sound</button>
+    </div>
+  </section>
+  <aside>
+    <div id="metrics"></div>
+    <h2>Latest events</h2>
+    <div id="events"><div class="muted">No events yet.</div></div>
+  </aside>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+let view = null, lastAlert = -1, sound = false, bannerUntil = 0;
+function beep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.25].forEach((d) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = "square"; o.frequency.value = 880;
+      g.gain.value = 0.08; o.connect(g); g.connect(ctx.destination); o.start(ctx.currentTime + d); o.stop(ctx.currentTime + d + 0.15); });
+  } catch (e) {}
+}
+$("#snd").onclick = () => { sound = !sound; $("#snd").textContent = sound ? "🔔 Alert sound on" : "🔔 Turn on alert sound"; if (sound) beep(); };
+$("#views").onchange = () => { view = null; };
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+async function poll() {
+  try {
+    const s = await (await fetch("/api/status?alert=" + Math.max(lastAlert, 0))).json();
+    $("#name").textContent = s.name || "Jetson Live";
+    document.title = (s.name || "Jetson") + " · Live";
+    const pill = $("#pill");
+    pill.className = "pill " + (s.error ? "err" : s.running ? "on" : "");
+    pill.textContent = s.error ? "Error" : s.running ? `${s.deployed ? "Deployed" : "Running"} · ${s.fps} FPS` : "Stopped";
+    // video
+    const sel = $("#views");
+    if ([...sel.options].map((o) => o.value).join() !== s.views.join())
+      sel.innerHTML = s.views.map((v) => `<option value="${v}">${esc((s.view_titles || {})[v] || v)}</option>`).join("");
+    sel.style.display = s.views.length > 1 ? "" : "none";
+    const want = s.views.includes(sel.value) ? sel.value : s.views[0];
+    if (s.running && want && view !== want) { view = want; $("#img").src = "/stream/" + want + "?t=" + Date.now(); }
+    if (!s.running && view) { view = null; $("#img").removeAttribute("src"); }
+    $("#idle").style.display = s.running && s.views.length ? "none" : "flex";
+    $("#idle").textContent = s.error ? "Stopped with an error: " + s.error : s.running ? "Starting…" : "Nothing is running on the Jetson right now.";
+    // numbers
+    const m = [...Object.entries(s.metrics), ["Running (min)", Math.floor(s.uptime / 60)]];
+    $("#metrics").innerHTML = m.map(([l, n]) => `<div class="m"><div class="n">${esc(n)}</div><div class="l">${esc(l)}</div></div>`).join("");
+    // events
+    const ev = s.events.filter((e) => !["START", "STOP"].includes(e.kind)).slice(-12).reverse();
+    $("#events").innerHTML = ev.map((e) => `<div class="ev ${e.kind}"><span class="muted">${e.t}</span><span><b>${esc(e.kind)}</b> ${esc(e.detail)}</span></div>`).join("") || `<div class="muted">No events yet.</div>`;
+    // alerts (ignore old ones on first load)
+    s.alerts.forEach((a) => {
+      if (lastAlert >= 0) { $("#banner").textContent = "🚨 " + a.msg + (a.reason ? " — " + a.reason : ""); bannerUntil = Date.now() + 8000; if (sound && a.sound) beep(); }
+    });
+    lastAlert = Math.max(lastAlert, 0, ...s.alerts.map((a) => a.seq));
+    $("#banner").style.display = Date.now() < bannerUntil ? "block" : "none";
+  } catch (e) {
+    $("#pill").className = "pill err"; $("#pill").textContent = "Can't reach the Jetson";
+  }
+  setTimeout(poll, 1000);
+}
+poll();
+</script>
+</body>
+</html>

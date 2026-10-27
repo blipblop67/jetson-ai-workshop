@@ -1,0 +1,108 @@
+{
+  "name": "Occupancy Monitor",
+  "task": "count",
+  "description": "Counts people inside an area and shows Occupied / Free against a capacity (seats, rooms, parking bays). Publishes the free count to MQTT for a dashboard.",
+  "nodes": [
+    {
+      "id": "a",
+      "type": "camera",
+      "params": {},
+      "x": 40,
+      "y": 60
+    },
+    {
+      "id": "b",
+      "type": "detect",
+      "params": {
+        "classes": [
+          "person"
+        ]
+      },
+      "x": 290,
+      "y": 60
+    },
+    {
+      "id": "c",
+      "type": "zone",
+      "params": {
+        "name": "Area",
+        "points": [
+          [
+            0.05,
+            0.3
+          ],
+          [
+            0.95,
+            0.3
+          ],
+          [
+            0.95,
+            0.98
+          ],
+          [
+            0.05,
+            0.98
+          ]
+        ]
+      },
+      "x": 540,
+      "y": 60
+    },
+    {
+      "id": "d",
+      "type": "occupancy",
+      "params": {
+        "object": [
+          "person"
+        ],
+        "capacity": 20,
+        "when": "never (just show)"
+      },
+      "x": 790,
+      "y": 60
+    },
+    {
+      "id": "e",
+      "type": "view",
+      "params": {
+        "title": "Occupancy"
+      },
+      "x": 1040,
+      "y": 60
+    },
+    {
+      "id": "f",
+      "type": "mqtt",
+      "params": {
+        "topic": "polimas/jetson1/free",
+        "message": "{Free}",
+        "mode": "every N seconds",
+        "every": 10
+      },
+      "x": 1040,
+      "y": 210
+    }
+  ],
+  "edges": [
+    [
+      "a",
+      "b"
+    ],
+    [
+      "b",
+      "c"
+    ],
+    [
+      "c",
+      "d"
+    ],
+    [
+      "d",
+      "e"
+    ],
+    [
+      "d",
+      "f"
+    ]
+  ]
+}

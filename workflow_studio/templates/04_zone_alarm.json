@@ -1,0 +1,114 @@
+{
+  "name": "Safety Zone Alarm",
+  "task": "safety",
+  "description": "Alarm, snapshot and log when a person steps into a danger zone. Draw your own zone in the Zone block.",
+  "nodes": [
+    {
+      "id": "a",
+      "type": "camera",
+      "params": {},
+      "x": 40,
+      "y": 60
+    },
+    {
+      "id": "b",
+      "type": "detect",
+      "params": {
+        "classes": [
+          "person"
+        ]
+      },
+      "x": 290,
+      "y": 60
+    },
+    {
+      "id": "c",
+      "type": "zone",
+      "params": {
+        "name": "Danger zone"
+      },
+      "x": 540,
+      "y": 60
+    },
+    {
+      "id": "d",
+      "type": "count_if",
+      "params": {
+        "object": [
+          "person"
+        ],
+        "op": ">=",
+        "value": 1,
+        "hold": 0.5
+      },
+      "x": 790,
+      "y": 60
+    },
+    {
+      "id": "e",
+      "type": "alert",
+      "params": {
+        "message": "Person in danger zone!"
+      },
+      "x": 1040,
+      "y": 60
+    },
+    {
+      "id": "f",
+      "type": "view",
+      "params": {
+        "title": "Zone alarm"
+      },
+      "x": 1290,
+      "y": 60
+    },
+    {
+      "id": "g",
+      "type": "snapshot",
+      "params": {
+        "every": 5
+      },
+      "x": 1290,
+      "y": 210
+    },
+    {
+      "id": "h",
+      "type": "log",
+      "params": {
+        "file": "zone_alarm.csv"
+      },
+      "x": 1040,
+      "y": 210
+    }
+  ],
+  "edges": [
+    [
+      "a",
+      "b"
+    ],
+    [
+      "b",
+      "c"
+    ],
+    [
+      "c",
+      "d"
+    ],
+    [
+      "d",
+      "e"
+    ],
+    [
+      "e",
+      "f"
+    ],
+    [
+      "e",
+      "g"
+    ],
+    [
+      "d",
+      "h"
+    ]
+  ]
+}

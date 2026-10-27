@@ -1,0 +1,91 @@
+{
+  "name": "Vehicle Speed Check",
+  "task": "time",
+  "description": "Measures vehicle speed between two lines a known distance apart. Over the limit \u2192 photo + log row. Measure the real distance between the lines on the road and type it in.",
+  "nodes": [
+    {
+      "id": "a",
+      "type": "camera",
+      "params": {},
+      "x": 40,
+      "y": 60
+    },
+    {
+      "id": "b",
+      "type": "detect",
+      "params": {
+        "classes": [
+          "car",
+          "motorcycle",
+          "bus",
+          "truck"
+        ],
+        "track": true
+      },
+      "x": 290,
+      "y": 60
+    },
+    {
+      "id": "c",
+      "type": "speed",
+      "params": {
+        "direction": "up / down",
+        "line1": 0.35,
+        "line2": 0.75,
+        "metres": 10,
+        "limit": 30
+      },
+      "x": 540,
+      "y": 60
+    },
+    {
+      "id": "d",
+      "type": "view",
+      "params": {
+        "title": "Speed check"
+      },
+      "x": 790,
+      "y": 60
+    },
+    {
+      "id": "e",
+      "type": "snapshot",
+      "params": {
+        "every": 2
+      },
+      "x": 790,
+      "y": 210
+    },
+    {
+      "id": "f",
+      "type": "log",
+      "params": {
+        "file": "speeding.csv"
+      },
+      "x": 790,
+      "y": 360
+    }
+  ],
+  "edges": [
+    [
+      "a",
+      "b"
+    ],
+    [
+      "b",
+      "c"
+    ],
+    [
+      "c",
+      "d"
+    ],
+    [
+      "c",
+      "e"
+    ],
+    [
+      "c",
+      "f"
+    ]
+  ]
+}

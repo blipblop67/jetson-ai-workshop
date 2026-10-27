@@ -1,0 +1,116 @@
+{
+  "name": "After-Hours Intruder Alarm",
+  "task": "safety",
+  "description": "A person seen between 18:00 and 07:00 \u2192 alarm and a 10 s video clip with the moments before. Add a Telegram block to get the photo on your phone.",
+  "nodes": [
+    {
+      "id": "a",
+      "type": "camera",
+      "params": {},
+      "x": 40,
+      "y": 60
+    },
+    {
+      "id": "b",
+      "type": "detect",
+      "params": {
+        "classes": [
+          "person"
+        ]
+      },
+      "x": 290,
+      "y": 60
+    },
+    {
+      "id": "c",
+      "type": "count_if",
+      "params": {
+        "object": [
+          "person"
+        ],
+        "op": ">=",
+        "value": 1,
+        "hold": 1
+      },
+      "x": 540,
+      "y": 60
+    },
+    {
+      "id": "d",
+      "type": "schedule",
+      "params": {
+        "start": "18:00",
+        "end": "07:00"
+      },
+      "x": 790,
+      "y": 60
+    },
+    {
+      "id": "e",
+      "type": "alert",
+      "params": {
+        "message": "Intruder detected!"
+      },
+      "x": 1040,
+      "y": 60
+    },
+    {
+      "id": "f",
+      "type": "view",
+      "params": {
+        "title": "Security"
+      },
+      "x": 1290,
+      "y": 60
+    },
+    {
+      "id": "g",
+      "type": "record",
+      "params": {
+        "seconds": 10,
+        "before": 3
+      },
+      "x": 1040,
+      "y": 210
+    },
+    {
+      "id": "i",
+      "type": "log",
+      "params": {
+        "file": "intruder.csv"
+      },
+      "x": 1290,
+      "y": 210
+    }
+  ],
+  "edges": [
+    [
+      "a",
+      "b"
+    ],
+    [
+      "b",
+      "c"
+    ],
+    [
+      "c",
+      "d"
+    ],
+    [
+      "d",
+      "e"
+    ],
+    [
+      "e",
+      "f"
+    ],
+    [
+      "d",
+      "g"
+    ],
+    [
+      "e",
+      "i"
+    ]
+  ]
+}

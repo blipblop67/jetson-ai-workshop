@@ -1,0 +1,130 @@
+{
+  "name": "Queue Wait-Time Monitor",
+  "task": "time",
+  "description": "Draw the queue area. Shows each customer's waiting time; alerts when someone waits over 2 minutes or when the queue has 6 or more people ('open another counter').",
+  "nodes": [
+    {
+      "id": "a",
+      "type": "camera",
+      "params": {},
+      "x": 40,
+      "y": 60
+    },
+    {
+      "id": "b",
+      "type": "detect",
+      "params": {
+        "classes": [
+          "person"
+        ],
+        "track": true
+      },
+      "x": 290,
+      "y": 60
+    },
+    {
+      "id": "c",
+      "type": "zone",
+      "params": {
+        "name": "Queue"
+      },
+      "x": 540,
+      "y": 60
+    },
+    {
+      "id": "d",
+      "type": "dwell",
+      "params": {
+        "limit": 120
+      },
+      "x": 790,
+      "y": 60
+    },
+    {
+      "id": "e",
+      "type": "alert",
+      "params": {
+        "message": "A customer has waited over 2 minutes"
+      },
+      "x": 1040,
+      "y": 60
+    },
+    {
+      "id": "f",
+      "type": "view",
+      "params": {
+        "title": "Queue"
+      },
+      "x": 1290,
+      "y": 60
+    },
+    {
+      "id": "g",
+      "type": "occupancy",
+      "params": {
+        "object": [
+          "person"
+        ],
+        "capacity": 6,
+        "when": "when full",
+        "hold": 5
+      },
+      "x": 790,
+      "y": 210
+    },
+    {
+      "id": "h",
+      "type": "alert",
+      "params": {
+        "message": "Queue is long: open another counter"
+      },
+      "x": 1040,
+      "y": 210
+    },
+    {
+      "id": "i",
+      "type": "log",
+      "params": {
+        "mode": "every N seconds",
+        "seconds": 60,
+        "file": "queue.csv"
+      },
+      "x": 1040,
+      "y": 360
+    }
+  ],
+  "edges": [
+    [
+      "a",
+      "b"
+    ],
+    [
+      "b",
+      "c"
+    ],
+    [
+      "c",
+      "d"
+    ],
+    [
+      "d",
+      "e"
+    ],
+    [
+      "e",
+      "f"
+    ],
+    [
+      "c",
+      "g"
+    ],
+    [
+      "g",
+      "h"
+    ],
+    [
+      "d",
+      "i"
+    ]
+  ]
+}

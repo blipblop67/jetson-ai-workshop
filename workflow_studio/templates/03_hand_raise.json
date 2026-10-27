@@ -1,0 +1,82 @@
+{
+  "name": "Hand-Raise Counter",
+  "task": "count",
+  "description": "Pose AI counts raised hands: a fun live quiz / vote in class. Shows how many hands are up and logs each vote.",
+  "nodes": [
+    {
+      "id": "a",
+      "type": "camera",
+      "params": {},
+      "x": 40,
+      "y": 60
+    },
+    {
+      "id": "b",
+      "type": "pose",
+      "params": {},
+      "x": 290,
+      "y": 60
+    },
+    {
+      "id": "c",
+      "type": "pose_if",
+      "params": {
+        "pose": "hand raised",
+        "value": 1,
+        "hold": 1
+      },
+      "x": 540,
+      "y": 60
+    },
+    {
+      "id": "d",
+      "type": "alert",
+      "params": {
+        "message": "{Hand_raised} hand(s) up!",
+        "sound": false
+      },
+      "x": 790,
+      "y": 60
+    },
+    {
+      "id": "e",
+      "type": "view",
+      "params": {
+        "title": "Q&A"
+      },
+      "x": 1040,
+      "y": 60
+    },
+    {
+      "id": "f",
+      "type": "log",
+      "params": {
+        "file": "hand_raise.csv"
+      },
+      "x": 790,
+      "y": 210
+    }
+  ],
+  "edges": [
+    [
+      "a",
+      "b"
+    ],
+    [
+      "b",
+      "c"
+    ],
+    [
+      "c",
+      "d"
+    ],
+    [
+      "d",
+      "e"
+    ],
+    [
+      "c",
+      "f"
+    ]
+  ]
+}

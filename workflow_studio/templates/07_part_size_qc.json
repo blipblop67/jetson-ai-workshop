@@ -1,0 +1,101 @@
+{
+  "name": "Part Size QC (Accept / Reject)",
+  "task": "inspect",
+  "description": "Top-down camera over a plain background measures each part in mm. Out of tolerance \u2192 REJECT alarm, photo and log. Calibrate 'Width of the camera view' with a ruler first.",
+  "nodes": [
+    {
+      "id": "a",
+      "type": "camera",
+      "params": {},
+      "x": 40,
+      "y": 60
+    },
+    {
+      "id": "b",
+      "type": "measure",
+      "params": {
+        "view_mm": 300,
+        "min_mm": 40,
+        "max_mm": 60
+      },
+      "x": 290,
+      "y": 60
+    },
+    {
+      "id": "c",
+      "type": "count_if",
+      "params": {
+        "object": [
+          "reject"
+        ],
+        "op": ">=",
+        "value": 1,
+        "hold": 0.3
+      },
+      "x": 540,
+      "y": 60
+    },
+    {
+      "id": "d",
+      "type": "alert",
+      "params": {
+        "message": "REJECT: part out of tolerance"
+      },
+      "x": 790,
+      "y": 60
+    },
+    {
+      "id": "e",
+      "type": "view",
+      "params": {
+        "title": "Inspection"
+      },
+      "x": 1040,
+      "y": 60
+    },
+    {
+      "id": "g",
+      "type": "snapshot",
+      "params": {
+        "every": 2
+      },
+      "x": 1040,
+      "y": 210
+    },
+    {
+      "id": "h",
+      "type": "log",
+      "params": {
+        "file": "qc_rejects.csv"
+      },
+      "x": 790,
+      "y": 210
+    }
+  ],
+  "edges": [
+    [
+      "a",
+      "b"
+    ],
+    [
+      "b",
+      "c"
+    ],
+    [
+      "c",
+      "d"
+    ],
+    [
+      "d",
+      "e"
+    ],
+    [
+      "d",
+      "g"
+    ],
+    [
+      "c",
+      "h"
+    ]
+  ]
+}

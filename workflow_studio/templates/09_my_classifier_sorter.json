@@ -1,0 +1,83 @@
+{
+  "name": "My Object Sorter",
+  "task": "inspect",
+  "description": "Uses YOUR Project 1 classifier: alerts and saves a photo when it sees the label you choose. Set the label in Classifier Condition.",
+  "nodes": [
+    {
+      "id": "a",
+      "type": "camera",
+      "params": {},
+      "x": 40,
+      "y": 60
+    },
+    {
+      "id": "b",
+      "type": "classify",
+      "params": {
+        "model": "",
+        "threshold": 0.6
+      },
+      "x": 290,
+      "y": 60
+    },
+    {
+      "id": "c",
+      "type": "label_if",
+      "params": {
+        "label": "phone",
+        "hold": 0.5
+      },
+      "x": 540,
+      "y": 60
+    },
+    {
+      "id": "d",
+      "type": "alert",
+      "params": {
+        "message": "Found it!"
+      },
+      "x": 790,
+      "y": 60
+    },
+    {
+      "id": "e",
+      "type": "view",
+      "params": {
+        "title": "Sorter"
+      },
+      "x": 1040,
+      "y": 60
+    },
+    {
+      "id": "f",
+      "type": "snapshot",
+      "params": {
+        "every": 3
+      },
+      "x": 1040,
+      "y": 210
+    }
+  ],
+  "edges": [
+    [
+      "a",
+      "b"
+    ],
+    [
+      "b",
+      "c"
+    ],
+    [
+      "c",
+      "d"
+    ],
+    [
+      "d",
+      "e"
+    ],
+    [
+      "d",
+      "f"
+    ]
+  ]
+}
